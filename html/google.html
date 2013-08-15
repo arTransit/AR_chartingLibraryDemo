@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+        <style type="text/css">
+            *{font-family:Arial, Helvetica, sans-serif;}
+            .smalltext {font-size:small;font-weight:bold;}
+        </style>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="jquery.dateFormat-1.0.js"></script>
+        <script type='text/javascript' src='http://www.google.com/jsapi'></script>
+        <script type='text/javascript'>
+            //https://developers.google.com/chart/interactive/docs/gallery/annotatedtimeline
+        
+            var rowData = [];
+            var columnNames = [];
+            var chartType = 'all';
+            var BASEURL = "http://localhost:8080/chartdata/";
+            //var BASEURL = "http://localhost:5000/";
+            var lineColours = ['#0C0099','#990B00','#00990B'];
+            
+            //google charts initialization
+            google.load('visualization', '1', {'packages':['annotatedtimeline']});
+            google.setOnLoadCallback(drawChart);
+            
+            $(document).ready(function() { 
+                $('#dataView').change(function() {
+                    chartType = $('#dataView').val();
+                    drawChart();
+                });
+            });
+
+            function getGFIdata()  {
+                switch( chartType ) {
+                    case 'all':
+                        url = BASEURL + 'gfiall/google';
+                        lineColours = ['#0C0099','#990B00','#00990B'];
+                        break;
+                    case 'year':
+                        url = BASEURL + 'gfi/google';
+                        lineColours = ['#030032','#0C0099','#1300FF','#7165FF',
+                                       '#320300','#990B00','#FF1200','#FF7065',
+                                       '#003203','#00990B','#00FF12','#65FF70'];
+                        break;
+                }
+                return $.getJSON( url, function(json) {
+                    var _rowData = [];
+                    var _columnNames = [];
+                    for (var i=0, l=json.gfiData.length; i < l; i++) {
+                        _rowData.push( [ 
+                                new Date(json.gfiData[i][0],json.gfiData[i][1],json.gfiData[i][2]) 
+                                ].concat( json.gfiData[i].slice(3) ));
+                    }
+                    for (var i=0, l=json.columns.length; i < l; i++) {
+                        _columnNames.push( json.columns[i] );
+                    }
+                    rowData = _rowData;
+                    columnNames = _columnNames
+                });
+            }
+            
+            function drawChart() {
+                var data = new google.visualization.DataTable();
+
+                getGFIdata().done( function() {
+                    // add column headers
+                    data.addColumn('date', 'Date');                
+                    for (var c=0, cl=columnNames.length; c < cl; c++) {
+                        data.addColumn('number', columnNames[c]);
+                    }
+                    data.addColumn('string', 'Annotation');
+
+                    data.addRows( rowData );
+                    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('googlechart'));
+                    google.visualization.events.addListener(chart,'rangechange',function() {
+                        dateRange = chart.getVisibleChartRange();
+                        $('#dateRangeBox').val( $.format.date(dateRange.start,'yyyy MMM dd') + " to " + $.format.date(dateRange.end,'yyyy MMM dd'));
+                    });
+                    chart.draw(data, {
+                        displayAnnotations:true,
+                        allowRedraw: true,
+                        legendPosition:'newRow', 
+                        numberFormats:'###,###,##0',
+                        colors: lineColours
+                    });
+                });
+            }
+        </script>
+    </head>
+
+    <body>
+        <table>
+            <tr>
+            <td valign="middle">
+                <h1><a href="https://developers.google.com/chart/interactive/docs/gallery/annotatedtimeline">
+                Google annotated timeline</a></h1>
+            </td><td  valign="middle" align="right">
+                <select id='dataView'>
+                    <option value="all">All data</option>
+                    <option value="year">Year on year</option>
+                </select>
+            </td></tr><tr><td  valign="middle" colspan="2">
+                <div id='googlechart' style='width: 700px; height: 300px;'></div>
+                <br>
+                <span class="smallText">Date range:</span>
+                <input id="dateRangeBox" type="text" value="" size="30" readonly>
+            </td></tr>
+        </table>
+    </body>
+</html>
