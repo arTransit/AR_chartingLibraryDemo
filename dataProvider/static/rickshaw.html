@@ -1,0 +1,189 @@
+<html>
+    <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+        <link type="text/css" rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css">
+        <link type="text/css" rel="stylesheet" href="rickshaw/rickshaw.min.css">
+        <link type="text/css" rel="stylesheet" href="rickshaw/extensions.css">
+        <style type="text/css">
+            *{font-family:Arial, Helvetica, sans-serif;}
+            .smalltext {font-size:small;font-weight:bold;}
+            #chart_container {
+                position: relative;
+                display: inline-block;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            #rickshawchart {
+                display: inline-block;
+                margin-left: 80px;
+            }
+            #y_axis {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 80px;
+            }
+            #legend {
+                display: inline-block;
+                vertical-align: top;
+                margin: 0 0 0 10px;
+            }
+            #timeline {
+                margin-top: 10px;
+                margin-left: 80px;
+            }
+            #slider {
+                margin-left: 80px;
+                margin-top: 10px;
+            }
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+        <script src="rickshaw/d3.v2.js"></script>
+        <script src="rickshaw/rickshaw.min.js"></script>
+        <script src="rickshaw/extensions.js"></script>
+        <script src="jquery.dateFormat-1.0.js"></script>
+
+        <script type='text/javascript'>
+            //http://code.shutterstock.com/rickshaw/
+        
+            var rowData = [];
+            var columnNames = [];
+            var annotations = [];
+            var chartType = 'all';
+            var graph;
+            //BASEURL = "http://localhost:8080/chartdata/";
+            var BASEURL = "http://localhost:5000/";
+            var lineColours = ['#0C0099','#990B00','#00990B'];
+            
+            $(document).ready(function() { 
+                drawChart();
+                
+                $('#dataView').change(function() {
+                    chartType = $('#dataView').val();
+                    clearGraph();
+                    drawChart();
+                });
+                $( "#slider" ).on( "slide", function( event, ui ) {
+                    $('#dateRangeBox').val( 
+                        $.format.date(new Date( $("#slider" ).slider("values",0)*1000 ),'yyyy MMM dd') + 
+                        " to " + 
+                        $.format.date(new Date( $("#slider" ).slider("values",1)*1000 ),'yyyy MMM dd'));
+                } );
+            });
+            
+            function getGFIdata()  {
+                switch( chartType ) {
+                    case 'all':
+                        var url = BASEURL + 'gfiall/rickshaw';
+                        lineColours = ['#0C0099','#990B00','#00990B'];
+                        break;
+                    case 'year':
+                        var url = BASEURL + 'gfi/rickshaw';
+                        lineColours = ['#030032','#0C0099','#1300FF','#7165FF',
+                                       '#320300','#990B00','#FF1200','#FF7065',
+                                       '#003203','#00990B','#00FF12','#65FF70'];
+                        break;
+                }
+                
+                return $.getJSON( url, function(json) {
+                    rowData = json.gfiData.data;
+                    columnNames = json.columns;
+                    annotations = json.gfiData.annotations;
+                });
+            }
+            
+            function clearGraph() {
+                $('#legend').empty();
+                $('#chart_container').html(
+                    '<div id="y_axis"></div><div id="rickshawchart"></div><div id="timeline"></div><div id="slider"></div>'
+                );
+            }
+            
+            function drawChart() {
+                getGFIdata().done( function() {
+                    var seriesData = [];
+                    for (var i=0, l=columnNames.length; i < l; i++) {
+                        var row = {
+                            color: lineColours[i],
+                            name: columnNames[i],
+                            data: rowData[i]
+                        };
+                        seriesData.push( row );
+                    }
+                    
+                    graph = new Rickshaw.Graph( {
+                        element: document.querySelector("#rickshawchart"),
+                        renderer: 'line',
+                        width: 600,
+                        height: 300,
+                        series: seriesData
+                    } );
+                    var x_axes = new Rickshaw.Graph.Axis.Time( { graph: graph } );
+                    var y_axis = new Rickshaw.Graph.Axis.Y( {
+                        graph: graph,
+                        orientation: 'left',
+                        tickFormat: numberWithCommas,
+                        element: document.getElementById('y_axis'),
+                    } );
+                    var legend = new Rickshaw.Graph.Legend( {
+                        element: document.querySelector('#legend'),
+                        graph: graph
+                    } );
+                    var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+                        graph: graph,
+                        legend: legend
+                    });
+                    var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+                        graph: graph,
+                        legend: legend
+                    });
+                    //date format
+                    var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+                        graph: graph,
+                        xFormatter: function(x) { return $.format.date(new Date(x*1000),'yyyy MMM dd') },
+                        yFormatter: function(y) { return numberWithCommas(y) }
+                    } );
+                    var annotator = new Rickshaw.Graph.Annotate({
+                        graph: graph,
+                        element: document.getElementById('timeline')
+                    });
+                    for (var i=0, l=annotations.length; i < l; i++) {
+                        annotator.add(annotations[i]["x"], annotations[i]["y"]);
+                    }
+                    var slider = new Rickshaw.Graph.RangeSlider({
+                        graph: graph,
+                        element: document.querySelector('#slider')
+                    });
+                
+                    graph.render();
+                });
+            }
+
+            
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1><a href="http://code.shutterstock.com/rickshaw/">Rickshaw/D3 chart</a></h1>
+        <select id='dataView'>
+            <option value="all">All data</option>
+            <option value="year">Year on year</option>
+        </select>
+        <p/>
+        <div id="chart_container">
+            <div id="y_axis"></div>
+            <div id="rickshawchart"></div>
+            <div id="timeline"></div>
+            <div id="slider"></div>
+        </div>
+        <div id="legend"></div>
+        <p/>
+        <span class="smallText">Date range:</span>
+        <input id="dateRangeBox" type="text" value="" size="30" readonly>
+    </body>
+</html>
