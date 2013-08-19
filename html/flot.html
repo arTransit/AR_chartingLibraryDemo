@@ -2,6 +2,7 @@
     <head>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
+        <link rel="stylesheet" href="iThing-min.css" />
         <style type="text/css">
             *{font-family:Arial, Helvetica, sans-serif;}
             .smalltext {font-size:small;font-weight:bold;}
@@ -12,6 +13,9 @@
             #flotsmallchart {
                 width: 850px;
                 height: 100px;
+            }
+            #slider {
+                width: 850px;
             }
             #tooltip {
                 position: absolute;
@@ -33,8 +37,9 @@
                 font-style: italic;
             }
         </style>
-
-        <script src="jquery-1.10.2.min.js" type="text/javascript" language="javascript"></script>
+        <script src="jquery-1.10.2.min.js"></script>
+        <script src="jquery-ui.min.js"></script>
+        <script src="jQAllRangeSliders-min.js"></script>
         <script src="flot/jquery.flot.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.time.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.navigate.js" type="text/javascript" language="javascript"></script>
@@ -42,7 +47,6 @@
         <script src="flot/jquery.flot.selection.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.rangeselection.js" type="text/javascript" language="javascript"></script>
         <script src="jquery.dateFormat-1.0.js" type="text/javascript" language="javascript"></script>
-        <script src="dragslider.js" type="text/javascript" language="javascript"></script>
         <script type='text/javascript'>
             
             // Flot/jQueryUI charting library
@@ -68,23 +72,28 @@
 
             var rangeselectionCallback = function(o){
                 //console.log("New selection:"+o.start+","+o.end);
+                setChartExtents( o.start, o.end );
+            }
+
+            function setChartExtents( min, max ) {
                 var xaxis = flotChart.getAxes().xaxis;
-                xaxis.options.min = o.start;
-                xaxis.options.max = o.end;
+                xaxis.options.min = min;
+                xaxis.options.max = max;
                 var yaxis = flotChart.getAxes().yaxis;
                 yaxis.options.min = yMin;
                 yaxis.options.max = yMax;
 
-                updateDateRangeBox( o.start, o.end);
+                updateDateRangeBox( min, max);
                 flotChart.setupGrid();
                 flotChart.draw();
+            
             }
-
-            function updateDateRangeBox( x1,x2 ) {
+            
+            function updateDateRangeBox( fromDate,toDate ) {
                 $('#dateRangeBox').val( 
-                        $.format.date(new Date( x1 ),'yyyy MMM dd') + 
+                        $.format.date(new Date( fromDate ),'yyyy MMM dd') + 
                         " to " + 
-                        $.format.date(new Date( x2 ),'yyyy MMM dd'));
+                        $.format.date(new Date( toDate ),'yyyy MMM dd'));
             }
             
             //function getGFIdata( url )
@@ -103,15 +112,6 @@
                         rowData[i].label = columnNames[i];
                     }
                 });
-            }
-            
-            //function clearGraph()
-            //  empty all div elements making up the chart
-            function clearGraph() {
-                $('#legend').empty();
-                $('#chart_container').html(
-                    '<div id="y_axis"></div><div id="rickshawchart"></div><div id="timeline"></div><div id="slider"></div>'
-                );
             }
             
             //function updateChartData( chartType )
@@ -201,6 +201,23 @@
                         callback: rangeselectionCallback
                     }
                 });
+                
+                var xaxis = flotChart.getAxes().xaxis;
+                console.log("min:" + xaxis.min);
+                console.log("max:" + xaxis.max);
+                $("#slider").dateRangeSlider({
+                    defaultValues:{min: new Date(xaxis.min),max: new Date(xaxis.max)},
+                    bounds:{min: new Date(xaxis.min),max: new Date(xaxis.max)},
+                    formatter:function(val){
+                        var monthNamesShort= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        var days = val.getDate(),
+                                year = val.getFullYear();
+                        return year + " " + monthNamesShort[val.getMonth()] + " " + days;
+                    }
+                });
+                $("#slider").on("valuesChanging", function(e, data){
+                    setChartExtents( data.values.min, data.values.max );
+                });
             }
             
             
@@ -216,7 +233,6 @@
                 //  All data: date range beginning to end
                 //  Year on year: current year overlapping previous years
                 $('#dataView').change(function() {
-                    //clearGraph();
                     updateChartData( $('#dataView').val() );
                 });
                 
@@ -253,6 +269,37 @@
                 });
         
                 updateChartData( $('#dataView').val() );
+
+                //$("#slider").dateRangeSlider();
+                /*
+                $("#slider").dateRangeSlider({
+                    defaultValues:{min: new Date(1264982400000),max: new Date(1363737600000)},
+                    bounds:{min: new Date(1264982400000),max: new Date(1363737600000)},
+                    formatter:function(val){
+                        var monthNamesShort= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        var days = val.getDate(),
+                                year = val.getFullYear();
+                        return year + " " + monthNamesShort[val.getMonth()] + " " + days;
+                    }
+                });
+                $("#slider").on("valuesChanging", function(e, data){
+                        $('#dateRangeBox').val( 
+                            $.format.date(new Date( data.values.min ),'yyyy MMM dd') + 
+                            " to " + 
+                            $.format.date(new Date( data.values.max ),'yyyy MMM dd'));
+                });
+                */
+                
+                /*
+                $( "#slider" ).dragslider({
+                    range: true,
+                    min: 0,
+                    max: 100,
+                    values: [ 0,100 ],
+                    change: function( event, ui ) {
+                    }
+                });
+                */
             });
                
         </script>
@@ -268,9 +315,9 @@
         <div id="chart_container">
             <div id="flotchart"></div>
             <br/>
-            <div id="slider"></div>
-            <br/>
             <div id="flotsmallchart"></div>
+            <br/>
+            <div id="slider"></div>
         </div>
         <p/>
         <span class="smallText">Date range:</span>
