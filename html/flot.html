@@ -41,6 +41,12 @@
             #tooltip #type {
                 font-style: italic;
             }
+            .mainRow {
+                display: inline-block;
+            }
+            #chartLengend {
+                vertical-align:top;
+            }
         </style>
         <script src="jquery-1.10.2.min.js"></script>
         <script src="jquery-ui.min.js"></script>
@@ -182,7 +188,7 @@
                 //draw smallchart
                 var sData = $.extend(true,[],rowData);
                 for(var i=0;i<sData.length;i++){
-                    sData[i].color = '#ccc';
+                    sData[i].color = '#2E2E2E';
                     sData[i].label = undefined;
                 }
                 flotsmallchart = $.plot("#flotsmallchart",sData,{
@@ -292,10 +298,9 @@
         </select>
         <p/>
         <div id="chart_container">
-            <div id="flotchart"></div>
-            <br/>
+            <div id="flotchart" class="mainRow"></div>
+            <div id="chartLengend" class="mainRow"><b>Legend</b><p/>I am a legend!</div>
             <div id="slider"></div>
-            <br/>
             <div id="flotsmallchart"></div>
         </div>
         <p/>
