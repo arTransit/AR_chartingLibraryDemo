@@ -2,7 +2,7 @@
     <head>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
         <meta content="utf-8" http-equiv="encoding">
-        <link rel="stylesheet" href="iThing-min.css" />
+        <link rel="stylesheet" href="iThing_mod.css" />
         <style type="text/css">
             *{font-family:Arial, Helvetica, sans-serif;}
             .smalltext {font-size:small;font-weight:bold;}
@@ -50,14 +50,13 @@
         <script src="flot/jquery.flot.navigate.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.events.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.selection.js" type="text/javascript" language="javascript"></script>
-        <script src="flot/jquery.flot.rangeselection.js" type="text/javascript" language="javascript"></script>
         <script src="jquery.dateFormat-1.0.js" type="text/javascript" language="javascript"></script>
         <script type='text/javascript'>
             
             // Flot/jQueryUI charting library
             // https://github.com/flot/flot
             //
-            // Date: 02 August 2013
+            // Date: 19 August 2013
             // Author: Andrew Ross <andrew_ross@bctransit.com>
             //
             // Todo:
@@ -198,9 +197,10 @@
                         show: false
                     },
                     grid:{
-                        color: "#666",
-                        backgroundColor: { colors: ["#ddd", "#fff"]}
-                    },
+                        color: "#666"
+                        //backgroundColor: { colors: ["#ddd", "#fff"]}
+                    }
+                    /*
                     rangeselection:{
                         color: "#feb",
                         start: flotChart.getAxes().xaxis.min,
@@ -208,6 +208,7 @@
                         enabled: true,
                         callback: rangeselectionCallback
                     }
+                    */
                 });
                 
                 var xaxis = flotChart.getAxes().xaxis;
@@ -278,36 +279,6 @@
         
                 updateChartData( $('#dataView').val() );
 
-                //$("#slider").dateRangeSlider();
-                /*
-                $("#slider").dateRangeSlider({
-                    defaultValues:{min: new Date(1264982400000),max: new Date(1363737600000)},
-                    bounds:{min: new Date(1264982400000),max: new Date(1363737600000)},
-                    formatter:function(val){
-                        var monthNamesShort= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        var days = val.getDate(),
-                                year = val.getFullYear();
-                        return year + " " + monthNamesShort[val.getMonth()] + " " + days;
-                    }
-                });
-                $("#slider").on("valuesChanging", function(e, data){
-                        $('#dateRangeBox').val( 
-                            $.format.date(new Date( data.values.min ),'yyyy MMM dd') + 
-                            " to " + 
-                            $.format.date(new Date( data.values.max ),'yyyy MMM dd'));
-                });
-                */
-                
-                /*
-                $( "#slider" ).dragslider({
-                    range: true,
-                    min: 0,
-                    max: 100,
-                    values: [ 0,100 ],
-                    change: function( event, ui ) {
-                    }
-                });
-                */
             });
                
         </script>
