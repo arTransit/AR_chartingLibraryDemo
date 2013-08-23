@@ -1,0 +1,110 @@
+/*
+ * chartingStyles.css
+ *
+ * Styles used by the charting widgit
+ *
+ * Author: Andrew Ross <andrew_ross@bctransit.com>
+ * Date: 2013 August 22
+ *
+ */
+
+
+/*
+ * Overall document styles
+ *
+ */
+
+* {
+     font-family:Arial, Helvetica, sans-serif;
+}
+.body {
+    margin:0;
+    padding:0;
+}
+.smalltext {
+    font-size:small;
+    font-weight:bold;
+}
+
+
+/*
+ * Legend styles
+ *
+ */
+
+.legendActiveItem {
+    font-weight:bold;
+    color:#000000;
+}
+.legendInactiveItem {
+    color:#999999;
+}
+.legendBox {
+    border:1px solid #000;
+    padding:1px 30px 1px 1px;
+    margin:0px 5px 0px 0px;
+}
+.legendList {
+    list-style: none inside none;
+    padding: 10px;
+    line-height: 25px;
+}
+.legendList lh {
+    font-size:large;
+    font-weight:bold;
+}
+
+
+/*
+ * Flot chart styles
+ *
+ */
+
+.#flotchart {
+    width: 850px;
+    height: 450px;
+}
+#flotsmallchart {
+    width: 850px;
+    height: 100px;
+}
+#slider {
+    margin-left:30px;
+    width: 820px;
+}
+#tooltip {
+    position: absolute;
+    display: none;
+    width: 300px;
+    border: 1px solid #fdd;
+    padding: 2px;
+    background-color: #fee;
+    opacity: 0.80;
+    font-size: smaller;
+    cursor:move;
+}
+
+#tooltip #title {
+    font-weight: bold;
+}
+
+#tooltip #type {
+    font-style: italic;
+}
+.mainRow {
+    display: inline-block;
+}
+#chartLegend {
+    vertical-align:top;
+}
+.legendBox {
+    vertical-align:middle;            
+    display: inline-block;
+    border:1px solid #000;
+    height:18px;
+    width:25px;
+}
+.legendText {
+    line-height:25px;
+}
+
