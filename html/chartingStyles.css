@@ -25,6 +25,9 @@
     font-size:small;
     font-weight:bold;
 }
+.mainRow {
+    display:inline-block;
+}
 
 
 /*
@@ -58,6 +61,33 @@
     vertical-align:top;
 }
 
+/*
+ * Annotation styles
+ *
+ */
+
+.AnnotationActiveItem {
+    font-weight:bold;
+    color:#000000;
+}
+.AnnotationInactiveItem {
+    color:#999999;
+}
+.AnnotationList {
+    list-style: none inside none;
+    padding: 10px;
+    line-height: 25px;
+}
+.AnnotationList lh {
+    font-size:large;
+    font-weight:bold;
+    line-height:25px;
+}
+#chartAnnotations {
+    vertical-align:top;
+}
+
+
 
 
 /*
@@ -90,13 +120,10 @@
 }
 
 #tooltip #title {
-    font-weight: bold;
+    font-weight:bold;
 }
 
 #tooltip #type {
-    font-style: italic;
-}
-.mainRow {
-    display: inline-block;
+    font-style:italic;
 }
 
