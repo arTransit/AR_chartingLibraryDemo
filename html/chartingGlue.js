@@ -161,8 +161,9 @@ function buildChart( rowData, columnNames, annotations ) {
     });
     
     // setup legend
+    $('#legendList li').remove();
     for(var i=0;i<columnNames.length;i++){
-        console.log( "Name: " + columnNames[i]);
+        //console.log( "Name: " + columnNames[i]);
         $("#legendList").append( 
                 "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
                 + lineColours[i] + ";\"></span> " + columnNames[i] + "</li>" );
