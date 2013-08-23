@@ -52,7 +52,12 @@
 .legendList lh {
     font-size:large;
     font-weight:bold;
+    line-height:25px;
 }
+#chartLegend {
+    vertical-align:top;
+}
+
 
 
 /*
@@ -93,18 +98,5 @@
 }
 .mainRow {
     display: inline-block;
-}
-#chartLegend {
-    vertical-align:top;
-}
-.legendBox {
-    vertical-align:middle;            
-    display: inline-block;
-    border:1px solid #000;
-    height:18px;
-    width:25px;
-}
-.legendText {
-    line-height:25px;
 }
 

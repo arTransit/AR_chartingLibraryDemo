@@ -35,11 +35,6 @@ var yMin, yMax;                     // max extents of flotChart y-axis (only use
  *
  */
 
-var rangeselectionCallback = function(o){
-    //console.log("New selection:"+o.start+","+o.end);
-    setChartExtents( o.start, o.end );
-}
-
 function setChartExtents( min, max ) {
     var xaxis = flotChart.getAxes().xaxis;
     xaxis.options.min = min;
@@ -168,15 +163,24 @@ function buildChart( rowData, columnNames, annotations ) {
     // setup legend
     for(var i=0;i<columnNames.length;i++){
         console.log( "Name: " + columnNames[i]);
-        //$("#chartLegend").append("<div class=\"legendBox\" style=\"background-color:" + + "#b0c4de;\"></div>" + columnNames[i] +"<br/>");
-        //var t = document.createTextNode(  );
-        $("#chartLegend").append( "<span class=\"legendText\"><div class=\"legendBox\" style=\"background-color:" + lineColours[i] + ";\"></div> " + columnNames[i] + "<br/></span>" );
-    }
+        $("#legendList").append( 
+                "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
+                + lineColours[i] + ";\"></span> " + columnNames[i] + "</li>" );
+     }
+    $(".legendItem").mouseover( function() {    //make menu item bold with focus
+        //console.log("Mouseover: " + $(this).index() );
+        $(".legendItem").removeClass("legendActiveItem");
+        $(".legendItem").addClass("legendInactiveItem");
+
+        $(this).removeClass("legendInactiveItem");
+        $(this).addClass("legendActiveItem");
+    });
+
 
     
     var xaxis = flotChart.getAxes().xaxis;
-    console.log("min:" + xaxis.min);
-    console.log("max:" + xaxis.max);
+    //console.log("min:" + xaxis.min);
+    //console.log("max:" + xaxis.max);
     $("#slider").dateRangeSlider({
         defaultValues:{min: new Date(xaxis.min),max: new Date(xaxis.max)},
         bounds:{min: new Date(xaxis.min),max: new Date(xaxis.max)},
@@ -219,15 +223,6 @@ $(function() {
             //console.log("Mouse gone");
         });
     });
-    $(".legendItem").mouseover( function() {    //make menu item bold with focus
-        console.log("Mouseover: " + $(this).index() );
-        $(".legendItem").removeClass("legendActiveItem");
-        $(".legendItem").addClass("legendInactiveItem");
-
-        $(this).removeClass("legendInactiveItem");
-        $(this).addClass("legendActiveItem");
-    });
-
     //pulldown list to change view of data
     //  All data: date range beginning to end
     //  Year on year: current year overlapping previous years
