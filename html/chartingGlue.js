@@ -224,6 +224,8 @@ $(function() {
             //console.log("Mouse gone");
         });
     });
+
+
     //pulldown list to change view of data
     //  All data: date range beginning to end
     //  Year on year: current year overlapping previous years
@@ -244,6 +246,9 @@ $(function() {
         "font-weight": "bold"
     }).appendTo("body");
     
+    /* 
+     * remove chart navigation
+     * 
     $("#flotchart").bind("plotpan", function (plot, args) {
         updateDateRangeBox( flotChart.getAxes().xaxis.options.min, flotChart.getAxes().xaxis.options.max );
     });
@@ -251,6 +256,9 @@ $(function() {
     $("#flotchart").bind("plotzoom", function (plot, args) {
         updateDateRangeBox( flotChart.getAxes().xaxis.options.min, flotChart.getAxes().xaxis.options.max );
     });
+     *
+     *
+     */
     
     $("#flotchart").bind("plothover", function (event, pos, item) {
         if (item) {
