@@ -122,12 +122,19 @@ function buildChart( rowData, columnNames, annotations ) {
             }
         },
         colors: lineColours,
+
+        /*
+         * Remove chart slippy map behaviour
+         *
         zoom: {
             interactive: true
         },
         pan: {
             interactive: true
         },
+         *
+         */
+
         grid: {
             hoverable: true,   // needed for tooltip
             autoHighlight: true
@@ -175,6 +182,15 @@ function buildChart( rowData, columnNames, annotations ) {
 
         $(this).removeClass("legendInactiveItem");
         $(this).addClass("legendActiveItem");
+
+        var flotOptions=flotChart.getOptions();
+        flotOptions.colors = lineColours.slice(0);  //clone colours
+        for(var i=0;i<flotOptions.colors.length;i++){
+            if (($(this).index()-1) != i) {
+                flotOptions.colors[i]="#CCC";
+            }
+        }
+        flotChart = $.plot("#flotchart", rowData, flotOptions );
     });
 
 
@@ -222,6 +238,10 @@ $(function() {
             $(this).removeClass("legendInactiveItem");
             $(this).removeClass("legendActiveItem");
             //console.log("Mouse gone");
+            var flotOptions=flotChart.getOptions();
+            flotOptions.colors = lineColours.slice(0);  //clone colours
+            flotChart = $.plot("#flotchart", rowData, flotOptions );
+ 
         });
     });
 
