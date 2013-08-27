@@ -11,7 +11,7 @@
  *      jquery rangeSlider: http://ghusse.github.io/jQRangeSlider/
  *
  * Author: Andrew Ross <andrew_ross@bctransit.com>
- * Date: 2013 August 22
+ * Date: 2013 August 27
  *
  */
 
@@ -25,6 +25,7 @@ var rowData = [];                   // array of data coordinates for each line/s
 var columnNames = [];               // name of each data series
 var annotations = [];               // array of annotation (date, label)
 var BASEURL = "http://localhost:8080/chartdata/";   // url for dataProvider
+//var BASEURL = "http://vtcfmev1.corp.bctransit.com:9000/chartdata/"; 
 var lineColours = [];               // array of colours for each line/series
 var flotChart, flotSmallChart;      // pointers to charts
 var yMin, yMax;                     // max extents of flotChart y-axis (only used to reset zoom)
@@ -167,7 +168,9 @@ function buildChart( rowData, columnNames, annotations ) {
         }
     });
     
-    // setup legend
+    /* setup legend
+     */
+
     $('#legendList li').remove();
     for(var i=0;i<columnNames.length;i++){
         //console.log( "Name: " + columnNames[i]);
@@ -175,7 +178,9 @@ function buildChart( rowData, columnNames, annotations ) {
                 "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
                 + lineColours[i] + ";\"></span> " + columnNames[i] + "</li>" );
      }
-    $(".legendItem").mouseover( function() {    //make menu item bold with focus
+    
+    //make menu item bold with focus
+    $(".legendItem").mouseover( function() {
         //console.log("Mouseover: " + $(this).index() );
         $(".legendItem").removeClass("legendActiveItem");
         $(".legendItem").addClass("legendInactiveItem");
@@ -184,17 +189,49 @@ function buildChart( rowData, columnNames, annotations ) {
         $(this).addClass("legendActiveItem");
 
         var flotOptions=flotChart.getOptions();
-        flotOptions.colors = lineColours.slice(0);  //clone colours
-        for(var i=0;i<flotOptions.colors.length;i++){
-            if (($(this).index()-1) != i) {
-                flotOptions.colors[i]="#CCC";
-            }
+        var newLineColours = new Array();
+        for(var i=0;i<lineColours.length;i++){
+            newLineColours.push( "#CCC" );
         }
+        // reset colour of selected line
+        newLineColours[ $(this).index()-1 ] = lineColours[$(this).index()-1];
+        flotOptions.colors = newLineColours;
         flotChart = $.plot("#flotchart", rowData, flotOptions );
     });
 
+    /* setup annotations
+     */
 
+    for( var i=0; i< annotations.length; i++){
+        $("#annotationList").append(
+                "<li class=\"annotationItem\">"
+                + "<b>" + annotations[i].title + "</b><br\>"
+                + annotations[i].description
+                + "<br\><i>" + $.format.date( annotations[i].max,"ddd, dd MMM yyyy") + "</i>"
+                + "</li>" );
+    }
     
+    //make menu item bold with focus
+    $(".annotationItem").hover( 
+        function() {
+            //console.log("Mouseover: " + $(this).index() );
+            //$(".annotationItem").removeClass("annotationActiveItem");
+            //$(".annotationItem").addClass("annotationInactiveItem");
+
+            $(this).removeClass("annotationInactiveItem");
+            $(this).addClass("annotationActiveItem");
+
+            flotChart.highlightEvent($(this).index() -1 );
+        }, 
+        function() {
+            $(this).removeClass("annotationActiveItem");
+            $(this).addClass("annotationInactiveItem");
+            flotChart.unhighlightEvent($(this).index() -1 );
+    });
+
+    /* setup slider
+     */
+
     var xaxis = flotChart.getAxes().xaxis;
     //console.log("min:" + xaxis.min);
     //console.log("max:" + xaxis.max);
@@ -205,7 +242,10 @@ function buildChart( rowData, columnNames, annotations ) {
             var monthNamesShort= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             var days = val.getDate(),
                     year = val.getFullYear();
-            return year + " " + monthNamesShort[val.getMonth()] + " " + days;
+            return year + " " 
+                    + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][val.getMonth()] 
+                    + " " + days;
         }
     });
     $("#slider").on("valuesChanging", function(e, data){
@@ -231,18 +271,19 @@ function numberWithCommas(n) {
 $(function() {
 
     // setup legend interactivity
-
     $("#legendList").mouseleave( function() {   //reset legend when looses focus
-        var listItems = $("#legendList li");
-        listItems.each(function() {
-            $(this).removeClass("legendInactiveItem");
-            $(this).removeClass("legendActiveItem");
-            //console.log("Mouse gone");
-            var flotOptions=flotChart.getOptions();
-            flotOptions.colors = lineColours.slice(0);  //clone colours
-            flotChart = $.plot("#flotchart", rowData, flotOptions );
- 
-        });
+        $(".legendItem").removeClass("legendActiveItem");
+        $(".legendItem").removeClass("legendInactiveItem");
+        
+        var flotOptions=flotChart.getOptions();
+        flotOptions.colors = lineColours.slice(0);  //clone colours
+        flotChart = $.plot("#flotchart", rowData, flotOptions );
+    });
+
+    // setup annotation interactivity
+    $("#annotationList").mouseleave( function() {   //reset annotation when looses focus
+        $(".annotationItem").removeClass("annotationActiveItem");
+        $(".annotationItem").removeClass("annotationInactiveItem");
     });
 
 
@@ -253,6 +294,7 @@ $(function() {
         updateChartData( $('#dataView').val() );
     });
     
+
     // datatooltip box for mouse hover
     $("<div id='datatooltip'></div>").css({
         position: "absolute",
