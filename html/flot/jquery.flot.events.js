@@ -50,10 +50,25 @@
             height: 10
         };
         
+        var EVENTHIGHLIGHT_WIDTH=1;
+        var EVENTHIGHLIGHT_HEIGHT=2;
+        
         var _events = [], _types, _eventsEnabled = false, lastRange;
         
         plot.getEvents = function(){
             return _events;
+        };
+        
+        plot.highlightEvent = function( i ){
+            var i = _events[i].visual().getObject();
+            $(i).width( DEFAULT_ICON.width * EVENTHIGHLIGHT_WIDTH );
+            $(i).height( DEFAULT_ICON.height * EVENTHIGHLIGHT_HEIGHT );
+        };
+        
+        plot.unhighlightEvent = function( i ){
+            var i = _events[i].visual().getObject();
+            $(i).width( DEFAULT_ICON.width );
+            $(i).height( DEFAULT_ICON.height );
         };
         
         plot.hideEvents = function(levelRange){
@@ -594,6 +609,11 @@
         this.moveTo = function(position) {
             _position = position;
             _moveFunc(_object, _position);
+        };
+        this.highlight = function(s) {
+            console.log("highlight:" +s);
+            _width *=  s;
+            _height = _height *s;
         };
     }
     
