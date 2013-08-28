@@ -9,6 +9,7 @@
  *      flot: http://www.flotcharts.org/
  *      jquery dateFormat: https://github.com/phstc/jquery-dateFormat
  *      jquery rangeSlider: http://ghusse.github.io/jQRangeSlider/
+ *      Flot event graphics (annotations): http://joeloughton.com/blog/web-applications/flot-plugins-event-graphics/
  *
  * Author: Andrew Ross <andrew_ross@bctransit.com>
  * Date: 2013 August 27
@@ -25,7 +26,6 @@ var rowData = [];                   // array of data coordinates for each line/s
 var columnNames = [];               // name of each data series
 var annotations = [];               // array of annotation (date, label)
 var BASEURL = "http://localhost:8080/chartdata/";   // url for dataProvider
-//var BASEURL = "http://vtcfmev1.corp.bctransit.com:9000/chartdata/"; 
 var lineColours = [];               // array of colours for each line/series
 var flotChart, flotSmallChart;      // pointers to charts
 var yMin, yMax;                     // max extents of flotChart y-axis (only used to reset zoom)
@@ -48,6 +48,7 @@ function setChartExtents( min, max ) {
     flotChart.setupGrid();
     flotChart.draw();
 
+    displayAnnotations( min, max );
 }
 
 function updateDateRangeBox( fromDate,toDate ) {
@@ -202,6 +203,8 @@ function buildChart( rowData, columnNames, annotations ) {
     /* setup annotations
      */
 
+    displayAnnotations( flotChart.getAxes().xaxis.min, flotChart.getAxes().xaxis.max ); 
+    /*
     for( var i=0; i< annotations.length; i++){
         $("#annotationList").append(
                 "<li class=\"annotationItem\">"
@@ -229,6 +232,8 @@ function buildChart( rowData, columnNames, annotations ) {
             flotChart.unhighlightEvent($(this).index() -1 );
     });
 
+    */
+
     /* setup slider
      */
 
@@ -239,9 +244,8 @@ function buildChart( rowData, columnNames, annotations ) {
         defaultValues:{min: new Date(xaxis.min),max: new Date(xaxis.max)},
         bounds:{min: new Date(xaxis.min),max: new Date(xaxis.max)},
         formatter:function(val){
-            var monthNamesShort= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             var days = val.getDate(),
-                    year = val.getFullYear();
+                year = val.getFullYear();
             return year + " " 
                     + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][val.getMonth()] 
@@ -262,6 +266,38 @@ function numberWithCommas(n) {
 }
 
 
+/*************************************************************************
+ * Annotation functions
+ *
+ */
+
+
+function displayAnnotations( min, max ) {
+    $('#annotationList li').remove();
+    for( var i=0; i< annotations.length; i++){
+        if( annotations[i].max >= min && annotations[i].max <= max ) {
+            $("#annotationList").append(
+                    "<li class=\"annotationItem\" name=\"" + i + "\">"
+                    + "<b>" + annotations[i].title + "</b><br\>"
+                    + annotations[i].description
+                    + "<br\><i>" + $.format.date( annotations[i].max,"ddd, dd MMM yyyy") + "</i>"
+                    + "</li>" );
+        }
+    }
+    
+    //make menu item bold with focus
+    $(".annotationItem").hover( 
+        function() {
+            $(this).removeClass("annotationInactiveItem");
+            $(this).addClass("annotationActiveItem");
+            flotChart.highlightEvent($(this).attr("name") );
+        }, 
+        function() {
+            $(this).removeClass("annotationActiveItem");
+            $(this).addClass("annotationInactiveItem");
+            flotChart.unhighlightEvent($(this).attr("name") );
+    });
+}
 
 /*************************************************************************
  * Document functions / jQuery setup
