@@ -131,6 +131,16 @@
 }
 
 
+.rotatedLable {
+    padding-right:10px;
+    display:block;
+    white-space:nowrap;
+    /*
+    -webkit-transform: rotate(45); 
+    -moz-transform: rotate(45deg);
+    */
+}
+
 /*
  * jQRangeSlider styles styles
  *

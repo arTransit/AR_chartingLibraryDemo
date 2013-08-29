@@ -120,15 +120,14 @@ function buildChart( rowData, columnNames, annotations ) {
         xaxis: { 
             mode: "time", 
             minTickSize: [1, "day"],
-            timeformat: "%e %b %Y",
-            font: { size: 10, family: "sans-serif", color: "#000" }
+            //timeformat: "%e %b %Y",
+            font: { size: 10, family: "sans-serif", color: "#000" },
+            ticks:generateXaxisTicks,
+            tickFormatter: xAxisDateFormat
         },
         yaxis: {
-            //labelWidth: 100,
             reserveSpace: 50,
-            tickFormatter: function(val, axis) {
-                return numberWithCommas( val );
-            }
+            tickFormatter: numberWithCommas
         },
         colors: lineColours,
 
@@ -245,6 +244,21 @@ function numberWithCommas(n) {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function xAxisDateFormat( n ) {
+    return "<span class=\"rotatedLable\">"
+            + $.format.date(n, "yyyy MMM d") + "</span>";
+}
+
+function generateXaxisTicks( axis ) {
+    var ticks=[], 
+        t=0,
+        sp=(axis.max-axis.min)/5;
+    do {
+        ticks.push( t * sp );
+        ++t;
+    } while ( (t * sp) < axis.max);
+    return ticks;
+}
 
 /*************************************************************************
  * Annotation functions
@@ -322,16 +336,20 @@ $(function() {
         "background-color": "#fee",
         opacity: 0.80,
         "font-family": "sans-serif",
-        "font-size": "small",
-        "font-weight": "bold"
+        //"font-weight": "bold",
+        "font-size": "small"
     }).appendTo("body");
     
    
     $("#flotchart").bind("plothover", function (event, pos, item) {
         if (item) {
-            var y = item.datapoint[1];
-            $("#datatooltip").html(item.series.label + ": " + numberWithCommas( y))
-            .css({top: item.pageY+5, left: item.pageX+5})
+            var y = item.datapoint[1],
+                x = item.datapoint[0];
+            $("#datatooltip").html(
+                "<b>" + item.series.label + ": " 
+                + numberWithCommas( y) + "</b>"
+                + "<br/><i>" + $.format.date(x, "yyyy MMM d") +"</i>"
+            ).css({top: item.pageY+5, left: item.pageX+5})
             .fadeIn(200);
         } else {
             $("#datatooltip").hide();

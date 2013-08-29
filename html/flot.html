@@ -16,13 +16,10 @@
              *      Flot: http://www.flotcharts.org/
              *      Flot event graphics (annotations): http://joeloughton.com/blog/web-applications/flot-plugins-event-graphics/
              *      
-             * Date: 26 August 2013
+             * Date: 2013 August 29
              * Author: Andrew Ross <andrew_ross@bctransit.com>
              *
              * Todo:
-             *      prevent x axis lables wrapping to 2 lines
-             *      annotations: implement listing
-             *          restriction anno list to date range
              *      zoom to?  update zoom bar?
              */
         
@@ -46,22 +43,22 @@
             <option value="year">Year on year</option>
         </select>
         <p/>
-        <div id="chart_container">
-            <div id="flotchart" class="mainRow"></div>
-            <div id="chartLegend" class="mainRow">
-                <ul class="legendList" id="legendList">
-                    <lh>Legend</lh>
-                </ul>
-            </div>
-            <div id="chartAnnotations" class="chartAnnotations mainRow">
-                <ul class="annotationList" id="annotationList">
-                    <lh>Annotations</lh>
-                </ul>
-            </div>
+        <div id="chart_container" class="mainRow">
+            <div id="flotchart"></div>
             <div id="slider"></div>
             <div id="flotsmallchart"></div>
         </div>
-        <p/>
+        <div id="chartLegend" class="mainRow">
+            <ul class="legendList" id="legendList">
+                <lh>Legend</lh>
+            </ul>
+        </div>
+        <div id="chartAnnotations" class="chartAnnotations mainRow">
+            <ul class="annotationList" id="annotationList">
+                <lh>Annotations</lh>
+            </ul>
+        </div>
+    <p/>
         <span class="smallText">Date range:</span>
         <input id="dateRangeBox" type="text" value="" size="30" readonly>
     </body>
