@@ -58,12 +58,14 @@ function updateDateRangeBox( fromDate,toDate ) {
             $.format.date(new Date( toDate ),'yyyy MMM dd'));
 }
 
-//function getGFIdata( url )
-//  url: url of data source
-//  json from data source must be properly formatted to contain:
-//      .data - 2-dimensional array of data points, inexed by columnName
-//      .columns - array of column names
-//      .annotations - array of dates and labels for annotations
+
+/* function getGFIdata( url )
+ *      url: url of data source
+ *      json from data source must be properly formatted to contain:
+ *      .data - 2-dimensional array of data points, inexed by columnName
+ *      .columns - array of column names
+ *      .annotations - array of dates and labels for annotations
+ */
 function getGFIdata( url )  {
     var json;
     return $.getJSON( url, function( json ) {
@@ -76,8 +78,10 @@ function getGFIdata( url )  {
     });
 }
 
-//function updateChartData( chartType )
-//  
+
+/* function updateChartData( chartType )
+ */
+  
 function updateChartData( chartType ) {
     switch( chartType ) {
         case 'all':
@@ -97,8 +101,11 @@ function updateChartData( chartType ) {
     });
 }
 
-//function buildChart( rowData )
-//  
+
+/* function buildChart( rowData )
+ *
+ */
+  
 function buildChart( rowData, columnNames, annotations ) {
     var flotOptions = {
         legend: {
@@ -204,35 +211,7 @@ function buildChart( rowData, columnNames, annotations ) {
      */
 
     displayAnnotations( flotChart.getAxes().xaxis.min, flotChart.getAxes().xaxis.max ); 
-    /*
-    for( var i=0; i< annotations.length; i++){
-        $("#annotationList").append(
-                "<li class=\"annotationItem\">"
-                + "<b>" + annotations[i].title + "</b><br\>"
-                + annotations[i].description
-                + "<br\><i>" + $.format.date( annotations[i].max,"ddd, dd MMM yyyy") + "</i>"
-                + "</li>" );
-    }
-    
-    //make menu item bold with focus
-    $(".annotationItem").hover( 
-        function() {
-            //console.log("Mouseover: " + $(this).index() );
-            //$(".annotationItem").removeClass("annotationActiveItem");
-            //$(".annotationItem").addClass("annotationInactiveItem");
 
-            $(this).removeClass("annotationInactiveItem");
-            $(this).addClass("annotationActiveItem");
-
-            flotChart.highlightEvent($(this).index() -1 );
-        }, 
-        function() {
-            $(this).removeClass("annotationActiveItem");
-            $(this).addClass("annotationInactiveItem");
-            flotChart.unhighlightEvent($(this).index() -1 );
-    });
-
-    */
 
     /* setup slider
      */
@@ -260,6 +239,7 @@ function buildChart( rowData, columnNames, annotations ) {
 
 /* function numberWithCommas( n )
  *      given integer n, return string of number commas between thousands
+ *      1234567 -> 1,234,567
  */
 function numberWithCommas(n) {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -288,6 +268,8 @@ function displayAnnotations( min, max ) {
     //make menu item bold with focus
     $(".annotationItem").hover( 
         function() {
+            $(".annotationItem").removeClass("annotationActiveItem");
+            $(".annotationItem").addClass("annotationInactiveItem");
             $(this).removeClass("annotationInactiveItem");
             $(this).addClass("annotationActiveItem");
             flotChart.highlightEvent($(this).attr("name") );
@@ -344,20 +326,7 @@ $(function() {
         "font-weight": "bold"
     }).appendTo("body");
     
-    /* 
-     * remove chart navigation
-     * 
-    $("#flotchart").bind("plotpan", function (plot, args) {
-        updateDateRangeBox( flotChart.getAxes().xaxis.options.min, flotChart.getAxes().xaxis.options.max );
-    });
-    
-    $("#flotchart").bind("plotzoom", function (plot, args) {
-        updateDateRangeBox( flotChart.getAxes().xaxis.options.min, flotChart.getAxes().xaxis.options.max );
-    });
-     *
-     *
-     */
-    
+   
     $("#flotchart").bind("plothover", function (event, pos, item) {
         if (item) {
             var y = item.datapoint[1];
