@@ -29,6 +29,7 @@ var BASEURL = "http://localhost:8080/chartdata/";   // url for dataProvider
 var lineColours = [];               // array of colours for each line/series
 var flotChart, flotSmallChart;      // pointers to charts
 var yMin, yMax;                     // max extents of flotChart y-axis (only used to reset zoom)
+var xMin, xMax;                     // max extents of flotChart x-axis (used to reset extent)
 
 
 /*************************************************************************
@@ -152,6 +153,8 @@ function buildChart( rowData, columnNames, annotations ) {
     flotChart = $.plot("#flotchart", rowData, flotOptions );
     yMin = flotChart.getAxes().yaxis.min;
     yMax = flotChart.getAxes().yaxis.max;
+    xMin = flotChart.getAxes().xaxis.min;
+    xMax = flotChart.getAxes().xaxis.max;
     
     //draw smallchart
     var sData = $.extend(true,[],rowData);
@@ -273,9 +276,25 @@ function setExtent( id ) {
     console.log("Now: " + m + "  " + y);
 
     switch( id ) {
+        case "fullExtent":
+            var min = new Date(xMin),  //use chart extents
+                max = new Date(xMax);
+            break;
         case "currentYear":
-            var min = new Date( y, 0 ),
-                max = new Date( y+ 1, 0);
+            var min = new Date( y,0,1),
+                max = new Date( y+1,0,0);
+            break;
+        case "currentMonth":
+            var min = new Date( y,m,1),
+                max = new Date( y,m+1,0);
+            break;
+        case "lastYear":
+            var min = new Date( y-1,0,1),
+                max = new Date( y,0,0);
+            break;
+        case "lastMonth":
+            var min = new Date( y,m-1,1),
+                max = new Date( y,m,0);
             break;
     }
     console.log("extent:" + min + " " + max);

@@ -85,7 +85,7 @@
 }
 .annotationList lh {
     font-weight:bold;
-    font-size:medium;
+    line-height:25px;
 }
 .annotationItem {
     margin-bottom:5pt;
