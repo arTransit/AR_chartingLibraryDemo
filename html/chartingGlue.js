@@ -260,6 +260,30 @@ function generateXaxisTicks( axis ) {
     return ticks;
 }
 
+
+/*************************************************************************
+ * Navigation functions
+ *
+ */
+
+function setExtent( id ) {
+    var d = new Date();
+    var m = d.getMonth(),
+        y = d.getFullYear();
+    console.log("Now: " + m + "  " + y);
+
+    switch( id ) {
+        case "currentYear":
+            var min = new Date( y, 0 ),
+                max = new Date( y+ 1, 0);
+            break;
+    }
+    console.log("extent:" + min + " " + max);
+    $("#slider").dateRangeSlider("values", min, max);
+    setChartExtents( min.getTime(), max.getTime() ); 
+}
+
+
 /*************************************************************************
  * Annotation functions
  *
