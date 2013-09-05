@@ -25,6 +25,7 @@
             legendCreated = false,
             dullColour = "#CCC",
             originalColours=[],
+            currentHighlightedItem = -1, 
             originalData = [];
 
         function getLegendListOptions(plot, options) {
@@ -51,12 +52,6 @@
             }
         }
 
-        function updateLegendItems(plot, canvascontext, series) {
-            $('#' +legendDiv +' ul').append(
-                 "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
-                + series.color + ";\"></span> " + series.label + "</li>" );
-        }
-
         function createLegend( plot, eventHolder ) {
             if ( !legendCreated ) {
                 var po = plot.getOptions();
@@ -65,10 +60,11 @@
 
                 for( var i=0; i < dataSeries.length; i++ ) {
                     $('#' +legendDiv +' ul').append(
-                         "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
+                        "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
                         + dataSeries[i].color + ";\"></span> " + dataSeries[i].label + "</li>" );
                 }
 
+                //add mouseover events to all new legend items
                 $(".legendItem").mouseover( function() {
                     $(".legendItem").removeClass("legendActiveItem");
                     $(".legendItem").addClass("legendInactiveItem");
@@ -77,13 +73,27 @@
                     $(this).addClass("legendActiveItem");
 
                     var thisSeries = $(this).index() -1;
-                    for (var i=0; i<dataSeries.length; i++ ) {
+                    var newData = plot.getData();
+                    if (currentHighlightedItem > -1) {
+                        newData = [].concat( 
+                                newData.slice(0,currentHighlightedItem), 
+                                newData.slice(-1),
+                                newData.slice(currentHighlightedItem,-1));
+                    }
+                    for (var i=0; i<newData.length; i++ ) {
                         if (i == thisSeries) {
-                            dataSeries[i].color = originalColours[i];
+                            newData[i].color = originalColours[i];
                         } else {
-                            dataSeries[i].color = dullColour;
+                            newData[i].color = dullColour;
                         }
                     }
+
+                    currentHighlightedItem = thisSeries;
+                    newData = [].concat( 
+                            newData.slice(0,currentHighlightedItem), 
+                            newData.slice(currentHighlightedItem+1),
+                            newData[currentHighlightedItem] );
+                    plot.setData( newData );
                     plot.draw();
                     /*
                     var flotOptions=flotChart.getOptions();
@@ -102,8 +112,15 @@
                     $(".legendItem").removeClass("legendActiveItem");
                     $(".legendItem").removeClass("legendInactiveItem");
                     
-                    for (var i=0; i<dataSeries.length; i++ ) {
-                        dataSeries[i].color = originalColours[i];
+                    var newData = plot.getData();
+                    if (currentHighlightedItem > -1) {
+                        newData = [].concat( 
+                                newData.slice(0,currentHighlightedItem), 
+                                newData.slice(-1),
+                                newData.slice(currentHighlightedItem,-1));
+                    }
+                    for (var i=0; i<newData.length; i++ ) {
+                        newData[i].color = originalColours[i];
                     }
                     plot.draw();
                     /*
