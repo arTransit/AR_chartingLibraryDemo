@@ -109,6 +109,10 @@ function updateChartData( chartType ) {
   
 function buildChart( rowData, columnNames, annotations ) {
     var flotOptions = {
+        legendlist:{
+           legendDiv: "chartLegend",
+           legendTitle: "My New Legend"
+        },
         legend: {
             show:false
         },
@@ -180,7 +184,7 @@ function buildChart( rowData, columnNames, annotations ) {
     
     /* setup legend
      */
-
+/*
     $('#legendList li').remove();
     for(var i=0;i<columnNames.length;i++){
         //console.log( "Name: " + columnNames[i]);
@@ -208,7 +212,7 @@ function buildChart( rowData, columnNames, annotations ) {
         flotOptions.colors = newLineColours;
         flotChart = $.plot("#flotchart", rowData, flotOptions );
     });
-
+*/
     /* setup annotations
      */
 
@@ -344,16 +348,6 @@ function displayAnnotations( min, max ) {
  */
 
 $(function() {
-
-    // setup legend interactivity
-    $("#legendList").mouseleave( function() {   //reset legend when looses focus
-        $(".legendItem").removeClass("legendActiveItem");
-        $(".legendItem").removeClass("legendInactiveItem");
-        
-        var flotOptions=flotChart.getOptions();
-        flotOptions.colors = lineColours.slice(0);  //clone colours
-        flotChart = $.plot("#flotchart", rowData, flotOptions );
-    });
 
     // setup annotation interactivity
     $("#annotationList").mouseleave( function() {   //reset annotation when looses focus
