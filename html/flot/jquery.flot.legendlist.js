@@ -9,10 +9,19 @@
  *      jquery
  *      flot: http://www.flotcharts.org/
  *
+ * options:
+ *      legendlist.legendDiv       name of div element to hold legend
+ *      legendlist.legendTitle     title of legend, defaults to "Legend"
+ *      legendlist.dullColour      colour used to 'dullen' unselected series
+ *
  * CSS:
- *      
+ *      .legendActiveItem       styling for active list elements ie bold
+ *      .legendInactiveItem     styling for inactive list elements
+ *      .legendBox              used to draw coloured box for each item 
+ *      .legendList             styling for list elements
+ *
  * Author: Andrew Ross <andrew_ross@bctransit.com>
- * Date: 2013 Sep 04
+ * Date:   2013 Sep 05
  *
  */
 
@@ -95,17 +104,6 @@
                             newData[currentHighlightedItem] );
                     plot.setData( newData );
                     plot.draw();
-                    /*
-                    var flotOptions=flotChart.getOptions();
-                    var newLineColours = new Array();
-                    for(var i=0;i<lineColours.length;i++){
-                        newLineColours.push( "#CCC" );
-                    }
-                    // reset colour of selected line
-                    newLineColours[ $(this).index()-1 ] = lineColours[$(this).index()-1];
-                    flotOptions.colors = newLineColours;
-                    flotChart = $.plot("#flotchart", rowData, flotOptions );
-                    */
                 });
 
                 $('#' +legendDiv).mouseleave( function() {   //reset legend when looses focus
@@ -123,11 +121,6 @@
                         newData[i].color = originalColours[i];
                     }
                     plot.draw();
-                    /*
-                    var flotOptions=flotChart.getOptions();
-                    flotOptions.colors = lineColours.slice(0);  //clone colours
-                    flotChart = $.plot("#flotchart", rowData, flotOptions );
-                    */
                 });
                 legendCreated = true;
             }
@@ -141,7 +134,7 @@
     var options = {
             legendList: {
                 legendDiv: "",
-                legendTitle: "StockLegend",
+                legendTitle: "Legend",
                 dullColour: "#CCC"
             }
         };
