@@ -60,15 +60,27 @@
         };
         
         plot.highlightEvent = function( i ){
-            var i = _events[i].visual().getObject();
-            $(i).width( DEFAULT_ICON.width * EVENTHIGHLIGHT_WIDTH );
-            $(i).height( DEFAULT_ICON.height * EVENTHIGHLIGHT_HEIGHT );
+                _highlightEvent(i);
+        };
+        var _highlightEvent = function( i ){
+            console.log(">>highlighting #: " +i + " " + _events[i]);
+
+            var a = _events[i];
+            //var b = a.visual();
+            var e = a.visual().getObject();
+            $(e).width( DEFAULT_ICON.width * EVENTHIGHLIGHT_WIDTH );
+            $(e).height( DEFAULT_ICON.height * EVENTHIGHLIGHT_HEIGHT );
         };
         
         plot.unhighlightEvent = function( i ){
-            var i = _events[i].visual().getObject();
-            $(i).width( DEFAULT_ICON.width );
-            $(i).height( DEFAULT_ICON.height );
+                _unhighlightEvent(i);
+        };
+        var _unhighlightEvent = function( i ) {
+            console.log(">>unhighlighting #: " +i);
+
+            var e = _events[i].visual().getObject();
+            $(e).width( DEFAULT_ICON.width );
+            $(e).height( DEFAULT_ICON.height );
         };
         
         plot.hideEvents = function(levelRange){
@@ -97,6 +109,14 @@
             // enable the plugin
             if (options.events.data != null) {
                 _eventsEnabled = true;
+                if (options.events.eventsListDiv) {
+                    $('#' +options.events.eventsListDiv).empty();
+                    $('#' +options.events.eventsListDiv).append(
+                        "<ul class=\"annotationList\" id=\"annotationList\">"
+                        + "<lh>Events</lh>"
+                        + "</ul>"
+                        )
+                }
             }
         });
         
@@ -139,21 +159,80 @@
             var o = plot.getPlotOffset();
             var pleft = o.left, pright = plot.width() - o.right;
 
+            if (options.events.eventsListDiv) {
+                $('#annotationList').empty();
+                $('#annotationList').append( "<lh>Events</lh>" );
+            }
+
             $.each(_events, function(index, event){
                             
                 // check event is inside the graph range and inside the hierarchy level
                 if (_insidePlot(event.getOptions().min) &&
                     !event.isHidden()) {
+
+                    var e=event.getOptions();
+                    $("#annotationList").append(
+                            "<li class=\"annotationItem\" name=\"" + index + "\">"
+                            + "<b>" + e.title + "</b><br\>"
+                            + e.description
+                            + "<br\><i>" + $.format.date( e.max,"ddd, dd MMM yyyy") + "</i>"
+                            + "</li>" );
+
                     event.visual().draw();
                 }  else {
                     event.visual().getObject().hide(); 
                 }
             });
             
+            //make menu item bold with focus
+            $(".annotationItem").hover( 
+                function() {
+                    $(".annotationItem").removeClass("annotationActiveItem");
+                    $(".annotationItem").addClass("annotationInactiveItem");
+                    $(this).removeClass("annotationInactiveItem");
+                    $(this).addClass("annotationActiveItem");
+                    _highlightEvent($(this).attr("name") );
+                }, 
+                function() {
+                    $(this).removeClass("annotationActiveItem");
+                    $(this).addClass("annotationInactiveItem");
+                    _unhighlightEvent($(this).attr("name") );
+            });
             _identicalStarts();
             _overlaps();
         };
         
+/*
+function displayAnnotations( min, max ) {
+    $('#annotationList li').remove();
+    for( var i=0; i< annotations.length; i++){
+        if( annotations[i].max >= min && annotations[i].max <= max ) {
+            $("#annotationList").append(
+                    "<li class=\"annotationItem\" name=\"" + i + "\">"
+                    + "<b>" + annotations[i].title + "</b><br\>"
+                    + annotations[i].description
+                    + "<br\><i>" + $.format.date( annotations[i].max,"ddd, dd MMM yyyy") + "</i>"
+                    + "</li>" );
+        }
+    }
+    
+    //make menu item bold with focus
+    $(".annotationItem").hover( 
+        function() {
+            $(".annotationItem").removeClass("annotationActiveItem");
+            $(".annotationItem").addClass("annotationInactiveItem");
+            $(this).removeClass("annotationInactiveItem");
+            $(this).addClass("annotationActiveItem");
+            flotChart.highlightEvent($(this).attr("name") );
+        }, 
+        function() {
+            $(this).removeClass("annotationActiveItem");
+            $(this).addClass("annotationInactiveItem");
+            flotChart.unhighlightEvent($(this).attr("name") );
+    });
+}
+*/
+
         var _withinHierarchy = function(level, levelRange){
             var range = {};            
 
@@ -575,7 +654,8 @@
             data: null,
             types: null,
             xaxis: 1,
-            clustering: false
+            clustering: false,
+            eventListDiv:""
         }
     };
     

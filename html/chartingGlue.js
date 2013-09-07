@@ -117,7 +117,8 @@ function buildChart( rowData, columnNames, annotations ) {
             show:false
         },
         events: {
-            data: annotations
+            data: annotations,
+            eventsListDiv: "chartAnnotations"
         },
         series: {
             lines: {show: true}
@@ -181,42 +182,13 @@ function buildChart( rowData, columnNames, annotations ) {
             color: "#666"
         }
     });
-    
-    /* setup legend
-     */
-/*
-    $('#legendList li').remove();
-    for(var i=0;i<columnNames.length;i++){
-        //console.log( "Name: " + columnNames[i]);
-        $("#legendList").append( 
-                "<li class=\"legendItem\"><span class=\"legendBox\" style=\"background-color:"
-                + lineColours[i] + ";\"></span> " + columnNames[i] + "</li>" );
-     }
-    
-    //make menu item bold with focus
-    $(".legendItem").mouseover( function() {
-        //console.log("Mouseover: " + $(this).index() );
-        $(".legendItem").removeClass("legendActiveItem");
-        $(".legendItem").addClass("legendInactiveItem");
 
-        $(this).removeClass("legendInactiveItem");
-        $(this).addClass("legendActiveItem");
 
-        var flotOptions=flotChart.getOptions();
-        var newLineColours = new Array();
-        for(var i=0;i<lineColours.length;i++){
-            newLineColours.push( "#CCC" );
-        }
-        // reset colour of selected line
-        newLineColours[ $(this).index()-1 ] = lineColours[$(this).index()-1];
-        flotOptions.colors = newLineColours;
-        flotChart = $.plot("#flotchart", rowData, flotOptions );
-    });
-*/
+
     /* setup annotations
      */
 
-    displayAnnotations( flotChart.getAxes().xaxis.min, flotChart.getAxes().xaxis.max ); 
+    // displayAnnotations( flotChart.getAxes().xaxis.min, flotChart.getAxes().xaxis.max ); 
 
 
     /* setup slider
@@ -312,7 +284,7 @@ function setExtent( id ) {
  *
  */
 
-
+/*
 function displayAnnotations( min, max ) {
     $('#annotationList li').remove();
     for( var i=0; i< annotations.length; i++){
@@ -341,6 +313,7 @@ function displayAnnotations( min, max ) {
             flotChart.unhighlightEvent($(this).attr("name") );
     });
 }
+*/
 
 /*************************************************************************
  * Document functions / jQuery setup
@@ -349,12 +322,13 @@ function displayAnnotations( min, max ) {
 
 $(function() {
 
+/*
     // setup annotation interactivity
     $("#annotationList").mouseleave( function() {   //reset annotation when looses focus
         $(".annotationItem").removeClass("annotationActiveItem");
         $(".annotationItem").removeClass("annotationInactiveItem");
     });
-
+*/
 
     //pulldown list to change view of data
     //  All data: date range beginning to end
