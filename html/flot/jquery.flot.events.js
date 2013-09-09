@@ -169,7 +169,6 @@
                 if (_insidePlot(event.getOptions().min) &&
                     !event.isHidden()) {
 
-                    console.log("event adding: " + index);
                     var e=event.getOptions();
                     $("#annotationList").append(
                             "<li class=\"annotationItem\" name=\"" + index + "\">"
@@ -185,10 +184,8 @@
             });
             
             //make menu item bold with focus
-            console.log(">>adding annotationItem events");
             $(".annotationItem").on({
                 mouseenter: function( event ) {
-                    console.log(">>hovering over #:" + $(this).attr("name")); 
                     $(".annotationItem").removeClass("annotationActiveItem");
                     $(".annotationItem").addClass("annotationInactiveItem");
                     $(this).removeClass("annotationInactiveItem");
@@ -196,7 +193,6 @@
                     plot.highlightEvent($(this).attr("name") );
                 }, 
                 mouseleave: function() {
-                    console.log(">>hovering out #:" + $(this).attr("name")); 
                     $(this).removeClass("annotationActiveItem");
                     $(this).addClass("annotationInactiveItem");
                     //_unhighlightEvent($(this).attr("name") );
