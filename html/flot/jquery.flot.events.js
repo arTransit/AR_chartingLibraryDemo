@@ -157,6 +157,7 @@
         var _drawEvents = function() {
             var o = plot.getPlotOffset();
             var pleft = o.left, pright = plot.width() - o.right;
+            var options = plot.getOptions();
 
             if (options.events.eventsListDiv) {
                 $('#annotationList').empty();
