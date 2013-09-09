@@ -63,24 +63,23 @@
                 _highlightEvent(i);
         };
         var _highlightEvent = function( i ){
-            console.log(">>highlighting #: " +i + " " + _events[i]);
-
-            var a = _events[i];
-            //var b = a.visual();
-            var e = a.visual().getObject();
-            $(e).width( DEFAULT_ICON.width * EVENTHIGHLIGHT_WIDTH );
-            $(e).height( DEFAULT_ICON.height * EVENTHIGHLIGHT_HEIGHT );
+            if (_events[i] !== undefined ) {
+                var a = _events[i].visual();
+                var e = a.getObject();
+                $(e).width( DEFAULT_ICON.width * EVENTHIGHLIGHT_WIDTH );
+                $(e).height( DEFAULT_ICON.height * EVENTHIGHLIGHT_HEIGHT );
+            }
         };
         
         plot.unhighlightEvent = function( i ){
                 _unhighlightEvent(i);
         };
         var _unhighlightEvent = function( i ) {
-            console.log(">>unhighlighting #: " +i);
-
-            var e = _events[i].visual().getObject();
-            $(e).width( DEFAULT_ICON.width );
-            $(e).height( DEFAULT_ICON.height );
+            if (_events[i] !== undefined ) {
+                var e = _events[i].visual().getObject();
+                $(e).width( DEFAULT_ICON.width );
+                $(e).height( DEFAULT_ICON.height );
+            }
         };
         
         plot.hideEvents = function(levelRange){
@@ -170,6 +169,7 @@
                 if (_insidePlot(event.getOptions().min) &&
                     !event.isHidden()) {
 
+                    console.log("event adding: " + index);
                     var e=event.getOptions();
                     $("#annotationList").append(
                             "<li class=\"annotationItem\" name=\"" + index + "\">"
@@ -185,54 +185,28 @@
             });
             
             //make menu item bold with focus
-            $(".annotationItem").hover( 
-                function() {
+            console.log(">>adding annotationItem events");
+            $(".annotationItem").on({
+                mouseenter: function( event ) {
+                    console.log(">>hovering over #:" + $(this).attr("name")); 
                     $(".annotationItem").removeClass("annotationActiveItem");
                     $(".annotationItem").addClass("annotationInactiveItem");
                     $(this).removeClass("annotationInactiveItem");
                     $(this).addClass("annotationActiveItem");
-                    _highlightEvent($(this).attr("name") );
+                    plot.highlightEvent($(this).attr("name") );
                 }, 
-                function() {
+                mouseleave: function() {
+                    console.log(">>hovering out #:" + $(this).attr("name")); 
                     $(this).removeClass("annotationActiveItem");
                     $(this).addClass("annotationInactiveItem");
-                    _unhighlightEvent($(this).attr("name") );
+                    //_unhighlightEvent($(this).attr("name") );
+                    plot.unhighlightEvent($(this).attr("name") );
+                }
             });
             _identicalStarts();
             _overlaps();
         };
         
-/*
-function displayAnnotations( min, max ) {
-    $('#annotationList li').remove();
-    for( var i=0; i< annotations.length; i++){
-        if( annotations[i].max >= min && annotations[i].max <= max ) {
-            $("#annotationList").append(
-                    "<li class=\"annotationItem\" name=\"" + i + "\">"
-                    + "<b>" + annotations[i].title + "</b><br\>"
-                    + annotations[i].description
-                    + "<br\><i>" + $.format.date( annotations[i].max,"ddd, dd MMM yyyy") + "</i>"
-                    + "</li>" );
-        }
-    }
-    
-    //make menu item bold with focus
-    $(".annotationItem").hover( 
-        function() {
-            $(".annotationItem").removeClass("annotationActiveItem");
-            $(".annotationItem").addClass("annotationInactiveItem");
-            $(this).removeClass("annotationInactiveItem");
-            $(this).addClass("annotationActiveItem");
-            flotChart.highlightEvent($(this).attr("name") );
-        }, 
-        function() {
-            $(this).removeClass("annotationActiveItem");
-            $(this).addClass("annotationInactiveItem");
-            flotChart.unhighlightEvent($(this).attr("name") );
-    });
-}
-*/
-
         var _withinHierarchy = function(level, levelRange){
             var range = {};            
 
