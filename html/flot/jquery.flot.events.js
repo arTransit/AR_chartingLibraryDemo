@@ -196,9 +196,12 @@
                 mouseleave: function() {
                     $(this).removeClass("annotationActiveItem");
                     $(this).addClass("annotationInactiveItem");
-                    //_unhighlightEvent($(this).attr("name") );
                     plot.unhighlightEvent($(this).attr("name") );
                 }
+            });
+            $("#annotationList").mouseleave( function() {   //reset annotation when looses focus
+                $(".annotationItem").removeClass("annotationActiveItem");
+                $(".annotationItem").removeClass("annotationInactiveItem");
             });
             _identicalStarts();
             _overlaps();
