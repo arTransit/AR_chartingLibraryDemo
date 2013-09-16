@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+        <script type='text/javascript'>
+            
+            /* Demo html page to test flot charting library.  Needs
+             * dataProvider json service to provide data.  Page includes
+             * functionality for interactive legend and annotations.
+             *
+             * The following libraries & plugins are required:
+             *      jquery
+             *      jquery-ui
+             *      jquery dateFormat: https://github.com/phstc/jquery-dateFormat
+             *      jquery rangeSlider: http://ghusse.github.io/jQRangeSlider/
+             *      Flot: http://www.flotcharts.org/
+             *      Flot event graphics (annotations): http://joeloughton.com/blog/web-applications/flot-plugins-event-graphics/
+             *      
+             * Date: 2013 August 29
+             * Author: Andrew Ross <andrew_ross@bctransit.com>
+             *
+             * Todo:
+             *      zoom to?  update zoom bar?
+             */
+        
+        </script>
+        <link rel="stylesheet" href="chartingStyles.css" />
+        <script src="jquery-1.10.2.min.js" type="text/javascript" language="javascript"></script>
+        <script src="jquery-ui.min.js" type="text/javascript" language="javascript"></script>
+        <script src="jQAllRangeSliders-min.js" type="text/javascript" language="javascript"></script>
+        <script src="flot/jquery.flot.js" type="text/javascript" language="javascript"></script>
+        <script src="flot/jquery.flot.time.js" type="text/javascript" language="javascript"></script>
+        <script src="flot/jquery.flot.events.js" type="text/javascript" language="javascript"></script>
+        <script src="flot/jquery.flot.selection.js" type="text/javascript" language="javascript"></script>
+        <script src="flot/jquery.flot.legendlist.js" type="text/javascript" language="javascript"></script>
+        <script src="jquery.dateFormat-1.0.js" type="text/javascript" language="javascript"></script>
+        <script src="chartingGlue3.js" type="text/javascript" language="javascript"></script>
+        <script src="biCharting.js" type="text/javascript" language="javascript"></script>
+    </head>
+    <body>
+        <h1><a href="https://github.com/flot/flot">Flot/jQueryUI chart</a></h1>
+        <select id='dataView'>
+            <option value="all">All data</option>
+            <option value="year">Year on year</option>
+        </select>
+        <p/>
+        <div style="width:1300px;">
+        <div id="mainChart" class="mainRow"></div>
+        <div id="chartLegend" style="width:150px;" class="mainRow"></div>
+        <div id="chartAnnotations" style="width:130px;" class="chartAnnotations mainRow"></div>
+        </div>
+        <p/>
+        <span class="smallText">Date range:</span>
+        <input id="dateRangeBox" type="text" value="" size="30" readonly>
+        <button id="currentYear" type="button" class="buttonStyle" onclick="setExtent(this.id)">Current Year</button>
+        <button id="currentMonth" type="button" class="buttonStyle" onclick="setExtent(this.id)">Current Month</button>
+        <button id="lastYear" type="button" class="buttonStyle" onclick="setExtent(this.id)">Last Year</button>
+        <button id="lastMonth" type="button" class="buttonStyle" onclick="setExtent(this.id)">Last Month</button>
+        <button id="fullExtent" type="button" class="buttonStyle" onclick="setExtent(this.id)">All Data / Full Extent</button>
+    </body>
+</html>
