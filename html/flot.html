@@ -35,6 +35,7 @@
         <script src="flot/jquery.flot.legendlist.js" type="text/javascript" language="javascript"></script>
         <script src="jquery.dateFormat-1.0.js" type="text/javascript" language="javascript"></script>
         <script src="chartingGlue.js" type="text/javascript" language="javascript"></script>
+        <script src="biCharting.js" type="text/javascript" language="javascript"></script>
     </head>
     <body>
         <h1><a href="https://github.com/flot/flot">Flot/jQueryUI chart</a></h1>
@@ -43,16 +44,12 @@
             <option value="year">Year on year</option>
         </select>
         <p/>
-        <div style="width:1250px;">
-        <div id="chart_container" class="mainRow">
-            <div id="flotchart"></div>
-            <div id="slider"></div>
-            <div id="flotsmallchart"></div>
-        </div>
-        <div id="chartLegend" style="width:100px;" class="mainRow"></div>
+        <div style="width:1300px;">
+        <div id="mainChart" class="mainRow"></div>
+        <div id="chartLegend" style="width:150px;" class="mainRow"></div>
         <div id="chartAnnotations" style="width:130px;" class="chartAnnotations mainRow"></div>
         </div>
-    <p/>
+        <p/>
         <span class="smallText">Date range:</span>
         <input id="dateRangeBox" type="text" value="" size="30" readonly>
         <button id="currentYear" type="button" class="buttonStyle" onclick="setExtent(this.id)">Current Year</button>
