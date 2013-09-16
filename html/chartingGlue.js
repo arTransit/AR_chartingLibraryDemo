@@ -48,8 +48,6 @@ function setChartExtents( min, max ) {
     updateDateRangeBox( min, max);
     flotChart.setupGrid();
     flotChart.draw();
-
-    displayAnnotations( min, max );
 }
 
 function updateDateRangeBox( fromDate,toDate ) {

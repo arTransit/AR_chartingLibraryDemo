@@ -30,7 +30,6 @@
         <script src="jQAllRangeSliders-min.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.time.js" type="text/javascript" language="javascript"></script>
-        <script src="flot/jquery.flot.navigate.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.events.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.selection.js" type="text/javascript" language="javascript"></script>
         <script src="flot/jquery.flot.legendlist.js" type="text/javascript" language="javascript"></script>
@@ -44,13 +43,15 @@
             <option value="year">Year on year</option>
         </select>
         <p/>
+        <div style="width:1250px;">
         <div id="chart_container" class="mainRow">
             <div id="flotchart"></div>
             <div id="slider"></div>
             <div id="flotsmallchart"></div>
         </div>
-        <div id="chartLegend" class="mainRow"></div>
-        <div id="chartAnnotations" class="chartAnnotations mainRow"></div>
+        <div id="chartLegend" style="width:100px;" class="mainRow"></div>
+        <div id="chartAnnotations" style="width:130px;" class="chartAnnotations mainRow"></div>
+        </div>
     <p/>
         <span class="smallText">Date range:</span>
         <input id="dateRangeBox" type="text" value="" size="30" readonly>
