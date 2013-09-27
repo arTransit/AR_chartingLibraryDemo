@@ -17,6 +17,8 @@
 (function ($) {
     function init(plot) {
         var buttonDown = false;
+        var movingMidPoint = false;
+        var movingEdges = false;
         var sliderBoxLeft = null,sliderBoxRight = null;
         var linkedChart = "";
         var sliderBoxEnabled = false;
@@ -84,15 +86,64 @@
             if (x < 0) { x = 0; };
             if (x > plot.width()) { x = plot.width(); };
 
-            var leftDistance = Math.abs( x - sliderBoxLeft );
-            var rightDistance = Math.abs( x - sliderBoxRight );
-            if (leftDistance < rightDistance) {
-                sliderBoxLeft = x;
+            if (movingMidPoint) { moveBox_midPoint( x ) }
+            else if (movingEdges) {moveBox_edges( x ) }
+            else {
+                var diffs = {};
+                diffs['sliderMidDiff'] = Math.abs( x-((sliderBoxRight + sliderBoxLeft) /2));
+                diffs['leftDiff'] =  Math.abs( x - sliderBoxLeft);
+                diffs['rightDiff'] = Math.abs( x - sliderBoxRight);
 
-            } else {
-                sliderBoxRight = x;
+                //find smallest difference - where is user clicking: left, mid, or right?
+                var smallestDiff = "sliderMidDiff";
+                $.each( diffs, function(key, value) {
+                    if ( value < diffs[ smallestDiff ] ) { smallestDiff = key; };
+                });
+                switch( smallestDiff ) {
+                    case "sliderMidDiff":
+                        moveBox_midPoint( x );
+                        break;
+                    case "leftDiff":
+                    case "rightDiff":
+                        moveBox_edges( x );
+                        break;
+                }
             }
             plot.draw();
+        }
+
+
+        function moveBox_midPoint( x ) {
+            var sliderMidPoint = (sliderBoxRight + sliderBoxLeft) /2;
+            var sliderMidDiff = x - sliderMidPoint;
+            movingMidPoint = true;
+
+            sliderBoxLeft += sliderMidDiff;
+            sliderBoxRight += sliderMidDiff;
+
+            //if box is outside of bounds, adjust left & right to keep width inside bounds
+            if (sliderBoxLeft < 0) { 
+                sliderBoxRight -= sliderBoxLeft;
+                sliderBoxLeft = 0; 
+            };
+            if (sliderBoxRight > plot.width()) {
+                sliderBoxLeft -= (sliderBoxRight - plot.width());
+                sliderBoxRight = plot.width(); 
+            };
+        }
+
+
+        function moveBox_edges( x ) {
+                var leftDistance = Math.abs(x - sliderBoxLeft);
+                var rightDistance = Math.abs(x - sliderBoxRight);
+                movingEdges = true;
+
+                if (leftDistance < rightDistance) {
+                    sliderBoxLeft = x;
+
+                } else {
+                    sliderBoxRight = x;
+                }
         }
 
         plot.hooks.processOptions.push( function( plot, options ) {
@@ -116,6 +167,8 @@
 
                 // reset mouse event
                 $(document).mouseup(function(e){
+                    movingMidPoint = false;
+                    movingEdges = false;
                     buttonDown = false;
                 });
 
