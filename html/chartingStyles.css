@@ -37,6 +37,27 @@
 
 
 /*
+ * SliderBox styles
+ *
+ */
+
+.tagClass {
+    font-size:small;
+    font-weight:bold;
+    border:1px solid;
+    border-color:#777;
+    border-radius:3px;
+    padding-left:2px;
+    padding-right:2px;
+    background:#eee;
+}
+.tagLeaderClass {
+    padding-top:15px;
+    border-right:2px solid;
+}
+
+
+/*
  * Legend styles
  *
  */

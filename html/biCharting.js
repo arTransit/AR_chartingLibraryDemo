@@ -1,7 +1,7 @@
 /*
  * biCharting.js
  * 
- * Wrapper class for flot charts, adding time slider & overall view chart
+ * Wrapper class for flot charts, adding time s222lider & overall view chart
  * 
  * Requirements:
  *      jquery
@@ -47,8 +47,8 @@ BiCharting = function() {
         //create chart containers and draw components
         _createDivs( this.divs );
         this.bigChart = $.plot( "#" + this.divs.mainChartDiv, data, chartOptions );
-        this.smallChart = _drawSmallChart( data, this.divs.smallChartDiv );
-        _drawSlider( this.bigChart, this.divs.sliderDiv );
+        this.smallChart = _drawSmallChart( data, this.divs.smallChartDiv, this.bigChart );
+        //_drawSlider( this.bigChart, this.divs.sliderDiv );
         
         //save chart extents
         var _axes = this.bigChart.getAxes()
@@ -80,7 +80,7 @@ BiCharting = function() {
         
         function _setExtents( min, max ){
             _setChartExtents( this.bigChart, min.getTime(), max.getTime() );
-            _setSliderExtents( this.divs.sliderDiv, min, max );
+            //_setSliderExtents( this.divs.sliderDiv, min, max );
         }
         this.setExtents = _setExtents;
 
@@ -88,7 +88,7 @@ BiCharting = function() {
             $("#" +divs.chartContainer).empty();
             $("#" +divs.chartContainer).append(
                     "<div id=\"" + divs.mainChartDiv + "\"></div>" +
-                    "<div id=\"" + divs.sliderDiv + "\"></div>" +
+                    //"<div id=\"" + divs.sliderDiv + "\"></div>" +
                     "<div id=\"" + divs.smallChartDiv + "\"></div>"
                 );
             var width = $("#" +divs.chartContainer).width();
@@ -96,8 +96,8 @@ BiCharting = function() {
 
             $("#" +divs.mainChartDiv).width( width ).height( height-170 );
             $("#" +divs.smallChartDiv).width( width ).height( 100 );
-            $("#" +divs.sliderDiv).width( width -25 );
-            $("#" +divs.sliderDiv).css( "margin-left",25 );
+            //$("#" +divs.sliderDiv).width( width -25 );
+            //$("#" +divs.sliderDiv).css( "margin-left",25 );
 
             // datatooltip box for mouse hover
             // append name of container to 'tooltip' to make unique name
@@ -129,7 +129,7 @@ BiCharting = function() {
             });
         }
 
-        function _drawSmallChart( data, smallChartDiv ){
+        function _drawSmallChart( data, smallChartDiv, bigChart ){
             var sData = $.extend(true,[],data);
             for(var i=0;i<sData.length;i++){
                 sData[i].color = '#2E2E2E';
@@ -149,7 +149,8 @@ BiCharting = function() {
                 grid:{
                     margin:{top:0,left:0,bottom:0,right:15}, //issue with non-aligning right edges
                     color: "#666"
-                }
+                },
+                sliderBox: { linkedChart: bigChart }
             });
             return flotSmallChart;
         }
