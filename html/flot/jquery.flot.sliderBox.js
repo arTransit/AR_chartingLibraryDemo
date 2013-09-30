@@ -148,9 +148,12 @@
 
         plot.hooks.processOptions.push( function( plot, options ) {
             if (options.sliderBox) {
+
+                var plotDiv = plot.getPlaceholder();
                 sliderBoxEnabled =true;
                 linkedChart = options.sliderBox.linkedChart;
 
+                /*
                 plot.hooks.bindEvents.push( function( plot,eventHolder) {
                     eventHolder.mousedown( function(e) {
                         buttonDown = true;
@@ -164,15 +167,29 @@
                         }
                     });
                 });
+                */
+
+                //virtual mouse events - combines regular and mobile events
+                $( plotDiv ).bind('vmousedown',function(e){
+                    buttonDown = true;
+                    moveBox( e.pageX );
+                });
+
+                $( plotDiv ).bind('vmousemove',function(e){
+                    if( buttonDown ) {
+                        moveBox( e.pageX );
+                    }
+                });
 
                 // reset mouse event
-                $(document).mouseup(function(e){
+                $(document).bind('vmouseup',function(e){
                     movingMidPoint = false;
                     movingEdges = false;
                     buttonDown = false;
                 });
 
                 plot.hooks.drawBackground.push( drawSliderBox );
+
             }
         });
     }
@@ -187,5 +204,6 @@
         version:"0.1"
     });
 })(jQuery);
+
 
 
